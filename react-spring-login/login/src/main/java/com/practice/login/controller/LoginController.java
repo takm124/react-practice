@@ -1,17 +1,17 @@
 package com.practice.login.controller;
 
+import com.practice.login.vo.User;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @Slf4j
 @RequestMapping("/api")
 public class LoginController {
-    @GetMapping("/user_inform/login")
-    public String login() {
-        log.info("통신 성공");
+
+    @PostMapping("/login")
+    public String login(@RequestBody User user) {
+        log.info(user.getUserId() + "({}) 접속 완료", user.getUserPw());
         return "success";
     }
 }

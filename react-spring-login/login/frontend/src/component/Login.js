@@ -1,49 +1,92 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+import styled from "styled-components";
+import axios from "axios";
 
+const Container = styled.div`
+  width: 312px;
+  height: 168px;
+
+  position: relative; 
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.04);
+
+  margin: 0 auto; 
+
+  margin-top: 150px;
+  margin-bottom: 32px;
+  display: flex;
+  flex-direction: column;
+`;
+
+const Input = styled.input`
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  height: 40px;
+  margin: 0 0 8px;
+  padding: 5px 39px 5px 11px;
+  border: solid 1px #dadada;
+  background: #fff;
+  box-sizing: border-box;
+`;
+
+const Button = styled.div`
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 49px;
+  display: block;
+  width: 100%;
+  height: 49px;
+  margin: 16px 0 7px;
+  cursor: pointer;
+  text-align: center;
+  color: #fff;
+  border: none;
+  border-radius: 0;
+  background-color: #03c75a;
+  ${({ disabled }) =>
+    disabled &&
+    `
+    background-color: #efefef;
+  `}
+`;
 
 function Login() {
-    const [inputId, setInputId] = useState('')
-    const [inputPw, setInputPw] = useState('')
+    const [loginId, setLoginId] = useState('')
+    const [loginPw, setLoginPw] = useState('')
 
-    // input data 의 변화가 있을 때마다 value 값을 변경해서 useState 해준다
     const handleInputId = (e) => {
-        setInputId(e.target.value)
+        setLoginId(e.target.value)
     }
 
     const handleInputPw = (e) => {
-        setInputPw(e.target.value)
+        setLoginPw(e.target.value)
     }
 
-    // login 버튼 클릭 이벤트
+    const requestLogin =() => {
+        console.log('requestLogin start');
+
+        let data = {
+            userId : loginId,
+            userPw : loginPw
+        };
+
+        axios.post('http://localhost:8080/api/login', data)
+            .then((response) => console.log(response.data))
+    }
+
     const onClickLogin = () => {
-        console.log('click login')
+        requestLogin(loginId, loginPw);
     }
-
-    // 페이지 렌더링 후 가장 처음 호출되는 함수
-    useEffect(() => {
-        fetch('http://localhost:8080/api/user_inform/login')
-            .then(res => {
-                console.log(res);
-            })
-    },[])
 
     return(
-        <div>
-            <h2>Login</h2>
-            <div>
-                <label htmlFor='input_id'>ID : </label>
-                <input type='text' name='input_id' value={inputId} onChange={handleInputId} />
-            </div>
-            <div>
-                <label htmlFor='input_pw'>PW : </label>
-                <input type='password' name='input_pw' value={inputPw} onChange={handleInputPw} />
-            </div>
-            <div>
-                <button type='button' onClick={onClickLogin}>Login</button>
-            </div>
-        </div>
-    )
-
+        <Container>
+            <Input type='text' name='id' id = 'id' value={loginId} placeholder="아이디를 입력하세요" onChange={handleInputId} />
+            <Input type='password' name='loginPw' id = 'loginPw' value={loginPw} placeholder="비밀번호를 입력하세요" onChange={handleInputPw} />
+            <Button type='button' onClick={onClickLogin}>Login</Button>
+        </Container>
+    );
 }
 
 export default Login;
