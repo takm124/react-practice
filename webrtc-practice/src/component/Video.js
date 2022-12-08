@@ -20,6 +20,7 @@ const Container = styled.div`
 
 function Video() {
     const hostVideoRef = useRef(null);
+    
     function getConnectedDevices(type, callback) {
         navigator.mediaDevices.enumerateDevices()
             .then(devices => {
