@@ -39,13 +39,35 @@ function App() {
 
   const wsSubscribe = () => {
       client.onConnect = () => {
-          client.subscribe('/call/video', (msg) => {
-              console.log(msg.body);
+          client.subscribe('/sub/video', (msg) => {
+            hostVideoRef.current.srcObject = msg;
           }, {id: "user"})
       }
   }
 
   wsSubscribe();
+
+  const sendChat = () => {
+    client.publish({
+      destination : '/app/chat',
+      body : JSON.stringify({
+        'message' : 'test'
+      })
+    })
+  }
+
+  async function sendVideo() {
+    const constraints = { 'video': true };
+    stream = await navigator.mediaDevices.getUserMedia(constraints);
+
+    client.publish({
+      destination : '/app/video',
+      body : stream
+    })
+  }
+
+ sendVideo();
+  
 
   // Video 구현부
   var stream;
@@ -73,13 +95,14 @@ function App() {
 
   //playVideoFromCamera();
 
+  
+
   return (
         <>
           <Container>
             <video id="localVideo" ref={hostVideoRef} autoPlay />
           </Container>
-            <button onClick = {sendChat}>전송</button>
-            <button onClick = {presenter}>presenter</button>
+          <button onClick={sendChat}>전송</button>
         </>
   );
 };
